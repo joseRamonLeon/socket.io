@@ -606,6 +606,10 @@ describe('socket.io', function(){
     });
   });
 
+  describe('room', function() {
+    var Room = require('../lib/room');
+  });
+
   describe('middleware', function(done){
     var Socket = require('../lib/socket');
 
