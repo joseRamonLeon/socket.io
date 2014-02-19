@@ -12,11 +12,24 @@ var Room = require('../../lib/room');
  * Room unit tests
  */
 describe('room', function() {
-  it('should initialize its instance variables', function (done) {
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
+  var sandbox;
+  
+  // Commonly used room dependencies
+  var id, srv, owner;
     
+  beforeEach(function () {
+    sandbox = sinon.sandbox.create();
+    
+    id = '123';
+    srv = sandbox.mock(sio);
+    owner = sandbox.mock(Socket);
+  });
+  
+  afterEach(function () {
+    sandbox.restore();
+  });
+  
+  it('should initialize its instance variables', function (done) { 
     var r = new Room(id, owner, srv);
     
     // Does it store room ID
@@ -33,17 +46,14 @@ describe('room', function() {
   
   it('should emit an error when onerror called', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
-    var badSocket = sinon.mock(Socket);
+    var badSocket = sandbox.mock(Socket);
     var errorText = '456';
     
     // Build isolated room
     var r = new Room(id, owner, srv);
     
     // Stub the 'emit' method
-    var method = sinon.stub(r, 'emit');
+    var method = sandbox.stub(r, 'emit');
     
     // Stub assertions
     sinon.assert.calledOnce(method);
@@ -57,16 +67,13 @@ describe('room', function() {
   
   it('should emit a join event when onjoin called', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
-    var joinedSocket = sinon.mock(Socket);
+    var joinedSocket = sandbox.mock(Socket);
     
     // Build isolated room
     var r = new Room(id, owner, srv);
     
     // Stub the 'emit' method
-    var method = sinon.stub(r, 'emit');
+    var method = sandbox.stub(r, 'emit');
     
     // Stub assertions
     sinon.assert.calledOnce(method);
@@ -80,16 +87,13 @@ describe('room', function() {
   
   it('should add joining socket to list when onjoin called', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
-    var joinedSocket = sinon.mock(Socket);
+    var joinedSocket = sandbox.mock(Socket);
     
     // Build isolated room
     var r = new Room(id, owner, srv);
     
     // Stub the 'emit' method
-    var method = sinon.stub(r, 'emit');
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onjoin(joinedSocket);
@@ -102,10 +106,7 @@ describe('room', function() {
   
   it('should emit a leave event when onleave called', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
-    var leavingSocket = sinon.mock(Socket);
+    var leavingSocket = sandbox.mock(Socket);
     var text = 'aoeu';
     
     // Build isolated room
@@ -117,7 +118,7 @@ describe('room', function() {
     r.sockets.push(leavingSocket);
     
     // Stub the 'emit' method
-    var method = sinon.stub(r, 'emit');
+    var method = sandbox.stub(r, 'emit');
     
     // Stub assertions
     sinon.assert.calledOnce(method);
@@ -131,10 +132,7 @@ describe('room', function() {
   
   it('should remove leaving socket from list when onleave called', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(http());
-    var owner = sinon.mock(Socket);
-    var leavingSocket = sinon.mock(Socket);
+    var leavingSocket = sandbox.mock(Socket);
     
     // Build isolated room
     var r = new Room(id, owner, srv);
@@ -145,7 +143,7 @@ describe('room', function() {
     r.sockets.push(leavingSocket);
     
     // Stub the 'emit' method
-    var method = sinon.stub(r.emit);
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onleave(leavingSocket);
@@ -158,9 +156,6 @@ describe('room', function() {
   
   it('should send messages', function (done) {
     // Mock room deps
-    var id = '123';
-    var srv = sinon.mock(sio);
-    var owner = sinon.mock(Socket);
     var eventName = 'message';
     var data = 'hello';
     
@@ -168,7 +163,7 @@ describe('room', function() {
     var r = new Room(id, owner, srv);
     
     // Stub the delegated sender function
-    var method = sinon.stub(srv.sockets.in(id).emit);
+    var method = sandbox.stub(srv.sockets.in(id), 'emit');
     
     // Execute
     r.emit(eventName, data);
