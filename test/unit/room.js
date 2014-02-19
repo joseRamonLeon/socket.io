@@ -155,4 +155,28 @@ describe('room', function() {
     
     done();
   });
+  
+  it('should send messages', function (done) {
+    // Mock room deps
+    var id = '123';
+    var srv = sinon.mock(sio);
+    var owner = sinon.mock(Socket);
+    var eventName = 'message';
+    var data = 'hello';
+    
+    // Build isolated room
+    var r = new Room(id, owner, srv);
+    
+    // Stub the delegated sender function
+    var method = sinon.stub(srv.sockets.in(id).emit);
+    
+    // Execute
+    r.emit(eventName, data);
+    
+    // Stub assertions
+    sinon.assert.calledOnce(method);
+    sinon.assert.calledWithMatch(method, eventName, data);
+    
+    done();
+  });
 });
