@@ -22,9 +22,9 @@ describe('socket.io', function () {
   describe('rooms', function () {
     
     describe('default namespace', function () {
-      it('should be accessible through .rooms', function () {
+      it('should be accessible through io.rooms', function () {
         var sio = io();
-        expect(sio.rooms).to.be.a(??);
+        expect(sio.rooms.on).to.be.a('function');
       });
 
       it('should fire a `create` event when created', function(done){
