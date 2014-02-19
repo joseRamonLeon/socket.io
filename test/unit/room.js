@@ -1,11 +1,12 @@
 var http = require('http').Server;
+var sio = require('../..');
 var request = require('supertest');
 var expect = require('expect.js');
 var sinon = require('sinon');
-var Socket = require('../lib/socket');
+var Socket = require('../../lib/socket');
 
 /* The System Under Test */
-var Room = require('../lib/room');
+var Room = require('../../lib/room');
     
 /*
  * Room unit tests
