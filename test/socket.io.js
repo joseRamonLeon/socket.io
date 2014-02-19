@@ -4,6 +4,7 @@ var io = require('..');
 var ioc = require('socket.io-client');
 var request = require('supertest');
 var expect = require('expect.js');
+var sinon = require('sinon');
 
 // creates a socket.io client for the given server
 function client(srv, nsp, opts){
@@ -603,34 +604,6 @@ describe('socket.io', function(){
           });
         });
       });
-    });
-  });
-
-  describe('room', function() {
-    var Socket = require('../lib/socket');
-    var Room = require('../lib/room');
-    
-    it('should initialize its instance variables', function (done) {
-      var id = '123';
-      var srv = http();
-      var owner = {};
-      var r = new Room(id, owner, srv);
-      
-      // Does it store room ID
-      expect(r.id).to.be(id);
-      
-      // Does it store the owner
-      expect(r.owner).to.be(owner);
-      
-      // Is the owner in the list of sockets
-      expect(r.sockets).to.contain(owner);
-      
-      done();
-    });
-    
-    it('should ', function (done) {
-    
-      done();
     });
   });
 
