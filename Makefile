@@ -5,7 +5,6 @@ test:
 	@./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		--slow 200ms \
-		--bail \
 		--recursive
 
 test-cov:
