@@ -22,7 +22,8 @@ describe('room', function() {
     
     id = '123';
     srv = sandbox.mock(sio);
-    owner = sandbox.mock(Socket);
+    // createStubInstance does not support __defineGetter__
+    owner = { id: '345' };
   });
   
   afterEach(function () {
@@ -46,7 +47,7 @@ describe('room', function() {
   
   it('should emit an error when onerror called', function (done) {
     // Mock room deps
-    var badSocket = sandbox.mock(Socket);
+    var badSocket = { id: '456' };
     var errorText = '456';
     
     // Build isolated room
@@ -67,7 +68,7 @@ describe('room', function() {
   
   it('should emit a join event when onjoin called', function (done) {
     // Mock room deps
-    var joinedSocket = sandbox.mock(Socket);
+    var joinedSocket = { id: '456' };
     
     // Build isolated room
     var r = new Room(id, owner, srv);
@@ -87,7 +88,7 @@ describe('room', function() {
   
   it('should add joining socket to list when onjoin called', function (done) {
     // Mock room deps
-    var joinedSocket = sandbox.mock(Socket);
+    var joinedSocket = { id: '456' };
     
     // Build isolated room
     var r = new Room(id, owner, srv);
@@ -106,7 +107,7 @@ describe('room', function() {
   
   it('should emit a leave event when onleave called', function (done) {
     // Mock room deps
-    var leavingSocket = sandbox.mock(Socket);
+    var leavingSocket = { id: '456' };
     var text = 'aoeu';
     
     // Build isolated room
@@ -132,7 +133,7 @@ describe('room', function() {
   
   it('should remove leaving socket from list when onleave called', function (done) {
     // Mock room deps
-    var leavingSocket = sandbox.mock(Socket);
+    var leavingSocket = { id: '456' };
     
     // Build isolated room
     var r = new Room(id, owner, srv);
