@@ -5,18 +5,7 @@ var request = require('supertest');
 var expect = require('expect.js');
 var Socket = require('../../lib/socket');
 var Room = require('../../lib/room');
-
-// creates a socket.io client for the given server
-function client(srv, nsp, opts){
-  if ('object' == typeof nsp) {
-    opts = nsp;
-    nsp = null;
-  }
-  var addr = srv.address();
-  if (!addr) addr = srv.listen().address();
-  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '');
-  return ioc(url, opts);
-}
+var client = require('../utilities').client;
 
 describe('socket.io', function () {
   describe('rooms', function () {
