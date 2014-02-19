@@ -66,6 +66,32 @@ describe('socket.io', function () {
         });
       });
 
+      it('can initiate its own messages to all its sockets', function (done) {
+        var srv = http();
+        var sio = io(srv);
+        var roomId = '123';
+        
+        srv.listen(function () {
+          // Create some network clients
+          var client = client(srv);
+        
+          // Get room to say something of its own accord
+          sio.rooms.on('create', function (room) {
+            room.send('ping');
+          });
+          
+          // We are done when we receive the event
+          client.on('message', function (data) {
+            done();
+          });
+          
+          // Connect a single client, listen for response          
+          client.on('connect', function (socket) {
+            socket.join(roomId);
+          });
+        });
+      });
+
       it('should have many sockets', function(done){
         var srv = http();
         var sio = io(srv);
