@@ -1,22 +1,11 @@
 
 var http = require('http').Server;
 var io = require('..');
-var ioc = require('socket.io-client');
 var request = require('supertest');
 var expect = require('expect.js');
 var sinon = require('sinon');
+var client = require('./utilities').client;
 
-// creates a socket.io client for the given server
-function client(srv, nsp, opts){
-  if ('object' == typeof nsp) {
-    opts = nsp;
-    nsp = null;
-  }
-  var addr = srv.address();
-  if (!addr) addr = srv.listen().address();
-  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '');
-  return ioc(url, opts);
-}
 
 describe('socket.io', function(){
   describe('server attachment', function(){
