@@ -1,10 +1,10 @@
 var http = require('http').Server;
-var io = require('..');
+var io = require('../..');
 var ioc = require('socket.io-client');
 var request = require('supertest');
 var expect = require('expect.js');
-var Socket = require('../lib/socket');
-var Room = require('../lib/room');
+var Socket = require('../../lib/socket');
+var Room = require('../../lib/room');
 
 // creates a socket.io client for the given server
 function client(srv, nsp, opts){
@@ -123,4 +123,4 @@ describe('socket.io', function () {
       });
     });
   });
-}):
+});
