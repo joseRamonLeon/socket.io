@@ -21,15 +21,13 @@ function client(srv, nsp, opts){
 describe('socket.io', function () {
   describe('rooms', function () {
     
-    // FIXME var Namespace = require('../lib/namespace');
-
-    describe('default', function () {
+    describe('default namespace', function () {
       it('should be accessible through .rooms', function () {
         var sio = io();
         expect(sio.rooms).to.be.a(??);
       });
 
-      it('should fire a `create` event', function(done){
+      it('should fire a `create` event when created', function(done){
         var srv = http();
         var sio = io(srv);
         srv.listen(function(){
@@ -37,6 +35,33 @@ describe('socket.io', function () {
           sio.rooms.on('create', function(room){
             expect(room).to.be.a(Room);
             done();
+          });
+        });
+      });
+      
+      it('should fire a `destroy` event when destroyed', function(done){
+        var srv = http();
+        var sio = io(srv);
+        var roomId = '123';
+        
+        srv.listen(function(){
+          var client = client(srv);
+          
+          // Set up rooms callback
+          sio.rooms.on('create', function(room){
+            // Finish when this happens
+            room.on('destroy', function () {
+              done();
+            });
+          });
+          
+          // Connect and disconnect a socket
+          client.on('connect', function (socket) {
+            // Join the room, thus creating it
+            socket.join(roomId);
+            
+            // Leave it - last one out triggers destruction
+            socket.leave(roomId);
           });
         });
       });
