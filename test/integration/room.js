@@ -5,7 +5,7 @@ var request = require('supertest');
 var expect = require('expect.js');
 var Socket = require('../../lib/socket');
 var Room = require('../../lib/room');
-var client = require('../utilities').client;
+var clientFactory = require('../utilities').client;
 
 describe('socket.io', function () {
   describe('rooms', function () {
@@ -20,7 +20,7 @@ describe('socket.io', function () {
         var srv = http();
         var sio = io(srv);
         srv.listen(function(){
-          var socket = client(srv);
+          var socket = clientFactory(srv);
           sio.rooms.on('create', function(room){
             expect(room).to.be.a(Room);
             done();
@@ -34,7 +34,7 @@ describe('socket.io', function () {
         var roomId = '123';
         
         srv.listen(function(){
-          var client = client(srv);
+          var client = clientFactory(srv);
           
           // Set up rooms callback
           sio.rooms.on('create', function(room){
@@ -62,7 +62,7 @@ describe('socket.io', function () {
         
         srv.listen(function () {
           // Create some network clients
-          var client = client(srv);
+          var client = clientFactory(srv);
         
           // Get room to say something of its own accord
           sio.rooms.on('create', function (room) {
@@ -88,7 +88,7 @@ describe('socket.io', function () {
         
         srv.listen(function () {
           // Create some network clients
-          var clients = [client(srv), client(srv)];
+          var clients = [clientFactory(srv), clientFactory(srv)];
         
           // Set up room callback
           sio.rooms.on('create', function (room) {
