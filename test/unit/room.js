@@ -36,9 +36,6 @@ describe('room', function() {
     // Does it store room ID
     expect(r.id).to.be(id);
     
-    // Does it store the owner
-    expect(r.owner).to.be(owner);
-    
     // Is the owner in the list of sockets
     expect(r.sockets).to.contain(owner);
     
