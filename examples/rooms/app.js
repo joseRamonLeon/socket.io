@@ -1,13 +1,6 @@
-// Setup basic express server
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('../..').listen(server);
+// Use the standalone server
+var io = require('../..')();
 var port = process.env.PORT || 8000;
-
-server.listen(port, function () {
-  console.log('Server listening at port %d', port);
-});
 
 io.rooms.on("create", function (room) {
   // ID is available
@@ -47,3 +40,5 @@ io.rooms.on("create", function (room) {
   });
 
 });
+
+io.listen(port);
