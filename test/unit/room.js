@@ -24,6 +24,7 @@ describe('room', function() {
     srv = sandbox.mock(sio);
     // createStubInstance does not support __defineGetter__
     owner = { id: '345' };
+    
     r = new Room(id, owner, srv);
   });
   
@@ -48,16 +49,16 @@ describe('room', function() {
     // Mock room deps
     var badSocket = { id: '456' };
     var errorText = '456';
-        
-    // Stub the signal
-    var method = sandbox.stub(r.on.error, 'dispatch');
+    
+    // Stub the 'emit' method
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onerror(badSocket, errorText);
     
     // Stub assertions
     sinon.assert.calledOnce(method);
-    sinon.assert.calledWithMatch(method, badSocket, errorText);
+    sinon.assert.calledWithMatch(method, 'error', badSocket, errorText);
     
     done();
   });
@@ -65,17 +66,17 @@ describe('room', function() {
   it('should emit a join event when onjoin called', function (done) {
     // Mock room deps
     var joinedSocket = { id: '456' };
-    
-    // Stub the signal
-    var method = sandbox.stub(r.on.join, 'dispatch');
-    
+
+    // Stub the 'emit' method
+    var method = sandbox.stub(r, 'emit');
+        
     // Execute
     r.onjoin(joinedSocket);
     
     // Stub assertions
     sinon.assert.calledOnce(method);
-    sinon.assert.calledWithMatch(method, joinedSocket);
-    
+    sinon.assert.calledWithMatch(method, 'join', joinedSocket);
+
     done();
   });
   
@@ -83,8 +84,8 @@ describe('room', function() {
     // Mock room deps
     var joinedSocket = { id: '456' };
     
-    // Stub the signal
-    var method = sandbox.stub(r.on.join, 'dispatch');
+    // Stub the 'emit' method
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onjoin(joinedSocket);
@@ -105,15 +106,15 @@ describe('room', function() {
     // but this is just a unit test)
     r.sockets.push(leavingSocket);
     
-    // Stub the signal
-    var method = sandbox.stub(r.on.leave, 'dispatch');
+    // Stub the 'emit' method
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onleave(leavingSocket, text);
     
     // Stub assertions
     sinon.assert.calledOnce(method);
-    sinon.assert.calledWithMatch(method, leavingSocket, text);
+    sinon.assert.calledWithMatch(method, 'leave', leavingSocket, text);
     
     done();
   });
@@ -127,8 +128,8 @@ describe('room', function() {
     // but this is just a unit test)
     r.sockets.push(leavingSocket);
     
-    // Stub the signal
-    var method = sandbox.stub(r.on.leave, 'dispatch');
+    // Stub the 'emit' method
+    var method = sandbox.stub(r, 'emit');
     
     // Execute
     r.onleave(leavingSocket);
@@ -144,8 +145,12 @@ describe('room', function() {
     var eventName = 'message';
     var data = 'hello';
     
+    // Build isolated room
+    var r = new Room(id, owner, srv);
+    
     // Stub the delegated sender function
-    var method = sandbox.stub(srv.sockets.in(id), 'emit');
+    console.log(srv);
+    var method = sandbox.stub(srv.in(id), 'emit');
     
     // Execute
     r.emit(eventName, data);
