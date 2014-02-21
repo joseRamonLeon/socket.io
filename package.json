@@ -25,7 +25,8 @@
     "mocha": "*",
     "expect.js": "*",
     "supertest": "*",
-    "istanbul": "0.2.3"
+    "istanbul": "0.2.3",
+    "sinon": "~1.8.2"
   },
   "contributors": [
     {
