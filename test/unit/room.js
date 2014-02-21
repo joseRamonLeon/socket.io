@@ -66,7 +66,7 @@ describe('room', function() {
     // Mock room deps
     var joinedSocket = { id: '456' };
     
-    // Stub the 'emit' method
+    // Stub the signal
     var method = sandbox.stub(r.on.join, 'dispatch');
     
     // Execute
@@ -83,7 +83,7 @@ describe('room', function() {
     // Mock room deps
     var joinedSocket = { id: '456' };
     
-    // Stub the 'emit' method
+    // Stub the signal
     var method = sandbox.stub(r.on.join, 'dispatch');
     
     // Execute
@@ -105,7 +105,7 @@ describe('room', function() {
     // but this is just a unit test)
     r.sockets.push(leavingSocket);
     
-    // Stub the 'emit' method
+    // Stub the signal
     var method = sandbox.stub(r.on.leave, 'dispatch');
     
     // Execute
@@ -127,7 +127,7 @@ describe('room', function() {
     // but this is just a unit test)
     r.sockets.push(leavingSocket);
     
-    // Stub the 'emit' method
+    // Stub the signal
     var method = sandbox.stub(r.on.leave, 'dispatch');
     
     // Execute
