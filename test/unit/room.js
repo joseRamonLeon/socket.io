@@ -4,6 +4,7 @@ var request = require('supertest');
 var expect = require('expect.js');
 var sinon = require('sinon');
 var Socket = require('../../lib/socket');
+var Namespace = require('../../lib/namespace');
 
 /* The System Under Test */
 var Room = require('../../lib/room');
@@ -15,17 +16,29 @@ describe('room', function() {
   var sandbox;
   
   // Commonly used room dependencies
-  var id, srv, owner, r;
+  var id, srv, owner, nsp, clientsArray, r;
     
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     
     id = '123';
-    srv = sandbox.mock(sio);
+    nsp = '';
     // createStubInstance does not support __defineGetter__
     owner = { id: '345' };
+    clientsArray = [owner];
+    srv = {
+      clients: function () {},
+      in: function () {
+        return {
+          emit: function () {}
+        };
+      }
+    };
+    sandbox.stub(srv, "clients", function () {
+      return clientsArray;
+    });
     
-    r = new Room(id, owner, srv);
+    r = new Room(id, srv);
   });
   
   afterEach(function () {
@@ -77,9 +90,10 @@ describe('room', function() {
     done();
   });
   
-  it('should add joining socket to list when onjoin called', function (done) {
+  it('should know of the joining socket when onjoin called', function (done) {
     // Mock room deps
     var joinedSocket = { id: '456' };
+    clientsArray.push(joinedSocket);
     
     // Stub the 'emit' method
     var method = sandbox.stub(r, 'emit');
@@ -97,12 +111,7 @@ describe('room', function() {
     // Mock room deps
     var leavingSocket = { id: '456' };
     var text = 'aoeu';
-    
-    // Tack on the extra socket to the list
-    // (not the normal way to do this,
-    // but this is just a unit test)
-    r.sockets.push(leavingSocket);
-    
+        
     // Stub the 'emit' method
     var method = sandbox.stub(r, 'emit');
     
@@ -119,11 +128,6 @@ describe('room', function() {
   it('should remove leaving socket from list when onleave called', function (done) {
     // Mock room deps
     var leavingSocket = { id: '456' };
-    
-    // Tack on the extra socket to the list
-    // (not the normal way to do this,
-    // but this is just a unit test)
-    r.sockets.push(leavingSocket);
     
     // Stub the 'emit' method
     var method = sandbox.stub(r, 'emit');
@@ -142,12 +146,9 @@ describe('room', function() {
     var eventName = 'message';
     var data = 'hello';
     
-    // Build isolated room
-    var r = new Room(id, owner, srv);
-    
     // Stub the delegated sender function
-    console.log(srv);
-    var method = sandbox.stub(srv.in(id), 'emit');
+    var namesp = srv.in(id);
+    var method = sandbox.stub(namesp, 'emit');
     
     // Execute
     r.emit(eventName, data);
